@@ -7,7 +7,7 @@ from defaults import (
     HUBSPOT_API_EVENTS_URL
 )
 
-load_dotenv()  # take environment variables
+load_dotenv() 
 
 def get_hubspot_access_token(url):
     data = {
@@ -72,6 +72,7 @@ if __name__ == "__main__":
     token = get_hubspot_access_token(HUBSPOT_API_OAUTH_URL)
     # 2) Fetch the email events list
     hs_events = fetch_hubspot_email_events(HUBSPOT_API_EVENTS_URL, token)
+    
     # 3) Transform each event into Amplitude format
     amp_events = [transform_to_amplitude(e) for e in hs_events]
     # 4) Send the batch to Amplitude
