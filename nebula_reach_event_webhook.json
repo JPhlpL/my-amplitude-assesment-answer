@@ -1,0 +1,28 @@
+<#assign UtilClass = statics[
+'com.amplitude.integrations.connector.utils.FtlUtils'
+]>
+
+<#assign rawEmail       = input.user_properties.email!''>
+<#assign hashedEmail    = UtilClass.sha256(rawEmail)!>
+
+<#assign rawExternal    = input.user_properties.external_id!''>
+<#assign hashedExternal = UtilClass.sha256(rawExternal)!>
+
+<#assign rawPhone       = input.user_properties.phone_number!''>
+<#assign cleanedPhone   = rawPhone?replace("[^0-9]", "", "r")!''>
+<#assign hashedPhone    = UtilClass.sha256(cleanedPhone)!>
+
+<#assign epochMillis    = input.event_time
+     ?datetime("yyyy-MM-dd HH:mm:ss.SSSSSS")?long!>
+<#assign epochSeconds   = (epochMillis / 1000)?floor!>
+
+{
+  "event":            ${UtilClass.toJsonString(input.event_type)},
+  "user_id":          ${UtilClass.toJsonString(hashedEmail)},
+  "event_time":       ${UtilClass.toJsonString(epochSeconds)},
+  "user_properties":  {
+    "phone_number":   ${UtilClass.toJsonString(hashedPhone)},
+    "external_id":    ${UtilClass.toJsonString(hashedExternal)}
+  },
+  "event_properties": ${UtilClass.toJsonString(input.event_properties)}
+}
